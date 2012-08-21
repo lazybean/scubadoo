@@ -1,0 +1,19 @@
+#divelog-app {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  margin: 1em;
+  text-align: center;
+  background: #8888FF;
+  border: 1px solid;
+}
+
+.dive-label {
+  display: block;
+}
+
+.dive-edit {
+display: none;
+}
+
+.dive-remove {
+background: red;
+}

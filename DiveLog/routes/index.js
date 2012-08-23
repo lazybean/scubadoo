@@ -4,6 +4,10 @@
  */
 
 exports.index = function(req, res){
-//  res.render('index', { title: 'Express' })
-  res.redirect('public/index.html');
+  res.render('index', { title: 'Express' });
+};
+
+
+exports.divelog = function(req, res){
+  res.render('divelog', { title: 'Express' });
 };

@@ -9,5 +9,9 @@ exports.index = function(req, res){
 
 
 exports.divelog = function(req, res){
-  res.render('divelog', { title: 'Express' });
+res.render('divelog', { title: 'Express' });
+};
+
+exports.test = function(req, res){
+res.render('test', { });
 };

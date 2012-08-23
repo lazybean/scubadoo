@@ -29,7 +29,7 @@ YUI().use('event-focus', 'json', 'model', 'model-list', 'view',  function(Y){
 
     //This function will iterate on all dive and calculate residual nitrogen, and if safety step is necessary
     calculateGroups: function calculateGroups(){
-      this.each(function(dive, index, diveLIst){
+      this.each(function(dive, index, diveList){
         var group;
         if (index === 0) {
           group = 0;

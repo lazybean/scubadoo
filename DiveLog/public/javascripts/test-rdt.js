@@ -2,7 +2,8 @@ YUI({
   filter: 'DEBUG',
   modules: {
     'dive-rdt': {
-      fullpath: './javascripts/rdt.js'
+      fullpath: './javascripts/rdt.js',
+      requires: ['array-extras']
     }
   }
 }).use('test-console', 'dive-rdt', function (Y) {
@@ -39,9 +40,34 @@ YUI({
 
     }
   }),
+  getEndOfDiveGroup = new Y.Test.Case({
+    name: 'getEndOfDiveGroup test',
+    '25m during 17min should give back F': function(){
+    var duration = 17,
+    depth = 25,
+    expectedGroup = 'F',
+    eodGroup;
+
+    eodGroup = Y.dive.getEndOfDiveGroup(depth, duration);
+
+    Y.Assert.areEqual(expectedGroup, eodGroup);
+    },
+    '12m during 151min is not allowed': function(){
+    
+    var duration = 151,
+    depth = 12,
+    expectedGroup = Y.dive.DIVE_NOT_RECOMMANDED,
+    eodGroup;
+
+    eodGroup = Y.dive.getEndOfDiveGroup(depth, duration);
+
+    Y.Assert.areEqual(expectedGroup, eodGroup);
+    }
+  }),
   rntTestSuite = new Y.Test.Suite('Y.dive Test');
 
   rntTestSuite.add(timeConversionTest);
+  rntTestSuite.add(getEndOfDiveGroup);
 
   new Y.Test.Console().render();
   Y.Test.Runner.add(rntTestSuite);

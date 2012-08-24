@@ -119,7 +119,7 @@ YUI.add('dive-rdt', function(Y){
 
   dive.computeNewGroupAfterSIT = function(oldGroup, restTime) {
     if (dive.isGroupValid(oldGroup)){
-      var subTable = dive.table.tableNAUI.sit[oldGroup]; 
+      var subTable = dive.table.nauiTable.sit[oldGroup]; 
 
     } else {
       Y.error('dive.computeNewGroupAfterSIT requires an residual nitrogen Group', 'Missing argument' );
@@ -129,31 +129,78 @@ YUI.add('dive-rdt', function(Y){
 
 
   /**
-   *Concert hh:mm  (or mm) string to minutes
-   *
-   * @method timeToMinutes
-   * @param {string} timeString the hh:mm or mm time 
-   * @return {number} number of minutes
-   */
+  *Concert hh:mm  (or mm) string to minutes
+  *
+  * @method timeToMinutes
+  * @param {string} timeString the hh:mm or mm time 
+  * @return {number} number of minutes
+  */
   dive.timeToMinutes = function(timeString) {
-    var timeRe =  /^\d+(:\d+)?$/;
+    var timeRe =  /^\d+(:\d+)?$/,
+    minutes, hourAndMinutes;
     if ( timeRe.test(timeString) ) {
-    var hourAndMinutes = timeString.split(':'),
-    minutes;
-    if (hourAndMinutes.length === 1) {
-      //minutes only
-      minutes =  parseInt(hourAndMinutes[0], 10);
+      hourAndMinutes = timeString.split(':');
+
+      if (hourAndMinutes.length === 1) {
+        //minutes only
+        minutes =  parseInt(hourAndMinutes[0], 10);
+      } else {
+        //hour and minutes
+        minutes = parseInt(hourAndMinutes[1], 10) + 60 * parseInt(hourAndMinutes[0], 10);
+      }
     } else {
-      //hour and minutes
-      minutes = parseInt(hourAndMinutes[1], 10) + 60 * parseInt(hourAndMinutes[0], 10);
-    }
-    } else {
-    minutes = null;
-    Y.error('dive.timeToMinutes accepts only hh:mm or mm time');
+      minutes = null;
+      Y.error('dive.timeToMinutes accepts only hh:mm or mm time');
     }
     return minutes;
   };
 
+  /**
+  * Return the new Group after a dive.
+  *
+  * @method getEndOfDiveGroup
+  * @param {number} depth the maximum depth reached during the dive
+  * @param {number} the duration of the dive in minutes 
+  */
+  dive.getEndOfDiveGroup = function (depth, duration) {
+    var table = dive.table.nauiTable.eod,
+    depthKey, durationKey, newGroup;
+    //get depth data
+    depthKey = dive.getClosestKey(depth, table);
+    if (Y.Lang.isNull(depthKey)){
+      newGroup = Y.dive.DIVE_NOT_RECOMMANDED;
+    } else { 
+      durationKey = dive.getClosestKey(duration, table[depthKey]);
+      if (Y.Lang.isNull(durationKey)){
+        newGroup = Y.dive.DIVE_NOT_RECOMMANDED;
+      } else {
+        newGroup = table[depthKey][durationKey].letter;
+      }
+    }
+    return newGroup;
+  };
+
+  /**
+  * Return the corresponding key 
+  * The corresponding key is the key with the value that is less than but the closest
+  * 
+  * @method getClosestKey
+  * @param {String} searchedkey
+  * @param {Object} the object in wich we are looking for the key
+  * @return {String} the closest existing key
+  *
+  */
+  dive.getClosestKey = function (searchedKey, obj) {
+    //we may want to avoid sorting and even finding every time
+    var keys = Y.Object.keys(obj).sort(Y.Array.numericSort);
+    return Y.Array.find(keys, function (k, i, keys) {
+      var result = false;
+      if (searchedKey <= parseInt(k, 10)) {
+        result = true;
+      } 
+      return result;
+    });
+  };
 
 
-}, '0.0.1', {requires:[]});
+}, '0.0.1', {requires:['array-extras']});

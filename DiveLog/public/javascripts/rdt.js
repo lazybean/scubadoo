@@ -3,6 +3,11 @@ YUI.add('dive-rdt', function(Y){
   var dive = Y.namespace('dive');
   Y.namespace('dive.table');
 
+  dive.DIVE_NOT_RECOMMANDED = 'Avoid diving';
+  dive.FIRST_DIVE = 'First dive';  
+  dive.TOO_MUCH_RDT = 1440;  
+  dive.RDT_FIRST_DIVE = 0; 
+
   /**
   * NAUI dive table. 
   * eod stands for End of Dive  Letter group: it gives you the residual nitrogen letter group after a dive
@@ -99,7 +104,142 @@ YUI.add('dive-rdt', function(Y){
 
     },
     "sit":{},
-    "rdt":{}
+    "rdt":{
+      A:{
+        "12": 7,
+        "15": 6,
+        "18": 5,
+        "21": 4,
+        "24": 4,
+        "27": 3,
+        "30": 3,
+        "33": 3,
+        "36": 3,
+        "40": 3
+      },
+      B:{
+        "12": 17,
+        "15": 13,
+        "18": 11,
+        "21": 9,
+        "24": 8,
+        "27": 7,
+        "30": 7,
+        "33": 6,
+        "36": 6,
+        "40": 6
+      },
+      C:{
+        "12": 25,
+        "15": 21,
+        "18": 17,
+        "21": 15,
+        "24": 13,
+        "27": 11,
+        "30": 10,
+        "33": 10,
+        "36": 9,
+        "40": 8
+      },
+      D:{
+        "12": 37,
+        "15": 29,
+        "18": 24,
+        "21": 20,
+        "24": 18,
+        "27": 16,
+        "30": 14,
+        "33": 13,
+        "36": 12,
+        "40": 11
+      },
+      E:{
+        "12": 49,
+        "15": 38,
+        "18": 30,
+        "21": 26,
+        "24": 23,
+        "27": 20,
+        "30": 18,
+        "33": 16,
+        "36": 15,
+        "40": 13
+      },
+      F:{
+        "12": 61,
+        "15": 47,
+        "18": 36,
+        "21": 31,
+        "24": 28,
+        "27": 24,
+        "30": 22,
+        "33": 20,
+        "36": 18,
+        "40": 16
+      },
+      G:{
+        "12": 73,
+        "15": 56,
+        "18": 44,
+        "21": 37,
+        "24": 32,
+        "27": 29,
+        "30": 26,
+        "33": 24,
+        "36": 21,
+        "40": 19
+      },
+      H:{
+        "12": 87,
+        "15": 66,
+        "18": 52,
+        "21": 43,
+        "24": 38,
+        "27": 33,
+        "30": 30,
+        "33": 27,
+        "36": 25,
+        "40": 22
+      },
+      I:{
+        "12": 101,
+        "15": 76,
+        "18": 61,
+        "21": 50,
+        "24": 43,
+        "27": 38,
+        "30": 34,
+        "33": 31,
+        "36": 28,
+        "40": 25
+      },
+      J:{
+        "12": 116,
+        "15": 87,
+        "18": 70,
+        "21": 57,
+        "24": 48,
+        "27": 43,
+        "30": 38
+      },
+      K:{
+        "12": 138,
+        "15": 99,
+        "18": 79,
+        "21": 64,
+        "24": 54,
+        "27": 47
+      },
+      L:{
+        "12": 161,
+        "15": 111,
+        "18": 88,
+        "21": 72,
+        "24": 61,
+        "27": 53
+      }
+
+    }
   };
 
   /**
@@ -178,6 +318,34 @@ YUI.add('dive-rdt', function(Y){
       }
     }
     return newGroup;
+  };
+
+  /**
+   * Return the residual diving time according to the current Group and expected depth
+   *
+   * @method getResidualDivingTime
+   * @param {String} group
+   * @param {number} depth
+   * @return {number} rdt the residual diving time, to add to the next dive duration
+   */
+  dive.getResidualDivingTime = function (group, depth) {
+  
+    var table = dive.table.nauiTable.rdt,
+    depthKey,  rdt;
+    //get depth data
+    if (group === Y.dive.DIVE_NOT_RECOMMANDED){
+      rdt = Y.dive.RDT_TOO_MUCH;
+    } if (group === Y.dive.FIRST_DIVE) {
+      rdt = Y.dive.RDT_FIRST_DIVE;
+    } else { 
+      depthKey = dive.getClosestKey(depth, table[group]);
+      if (Y.Lang.isNull(depthKey)){
+        rdt = Y.dive.RDT_TOO_MUCH;
+      } else {
+        rdt  = table[group][depthKey];
+      }
+    }
+    return rdt;
   };
 
   /**

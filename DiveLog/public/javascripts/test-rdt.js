@@ -43,31 +43,64 @@ YUI({
   getEndOfDiveGroup = new Y.Test.Case({
     name: 'getEndOfDiveGroup test',
     '25m during 17min should give back F': function(){
-    var duration = 17,
-    depth = 25,
-    expectedGroup = 'F',
-    eodGroup;
+      var duration = 17,
+      depth = 25,
+      expectedGroup = 'F',
+      eodGroup;
 
-    eodGroup = Y.dive.getEndOfDiveGroup(depth, duration);
+      eodGroup = Y.dive.getEndOfDiveGroup(depth, duration);
 
-    Y.Assert.areEqual(expectedGroup, eodGroup);
+      Y.Assert.areEqual(expectedGroup, eodGroup);
     },
     '12m during 151min is not allowed': function(){
-    
-    var duration = 151,
-    depth = 12,
-    expectedGroup = Y.dive.DIVE_NOT_RECOMMANDED,
-    eodGroup;
 
-    eodGroup = Y.dive.getEndOfDiveGroup(depth, duration);
+      var duration = 151,
+      depth = 12,
+      expectedGroup = Y.dive.DIVE_NOT_RECOMMANDED,
+      eodGroup;
 
-    Y.Assert.areEqual(expectedGroup, eodGroup);
+      eodGroup = Y.dive.getEndOfDiveGroup(depth, duration);
+
+      Y.Assert.areEqual(expectedGroup, eodGroup);
+    }
+  }),
+  getResidualDivingTime = new Y.Test.Case({
+    name: 'getResidualDivingTime test',
+    'A at 25m -> 3': function () {
+      var group = 'A',
+      depth = 25,
+      expectedRDT = 3,
+      result;
+
+      result = Y.dive.getResidualDivingTime(group, depth);
+      Y.Assert.areEqual(expectedRDT, result);
+    },
+    'J at 33m gives too much': function () {
+
+      var group = 'J',
+      depth = 33,
+      expectedRDT = Y.dive.RDT_TOO_MUCH,
+      result;
+
+      result = Y.dive.getResidualDivingTime(group, depth);
+      Y.Assert.areEqual(expectedRDT, result);
+    }, 
+    'If there was no dive, rdt should be 0': function () {
+      var group = Y.dive.FIRST_DIVE,
+      depth = 15, //any depth
+      expectedRDT = 0,
+      result;
+
+      result = Y.dive.getResidualDivingTime(group, depth);
+      Y.Assert.areEqual(expectedRDT, result);
+
     }
   }),
   rntTestSuite = new Y.Test.Suite('Y.dive Test');
 
   rntTestSuite.add(timeConversionTest);
   rntTestSuite.add(getEndOfDiveGroup);
+  rntTestSuite.add(getResidualDivingTime);
 
   new Y.Test.Console().render();
   Y.Test.Runner.add(rntTestSuite);

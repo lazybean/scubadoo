@@ -1,4 +1,11 @@
-YUI().use('event-focus', 'json', 'model', 'model-list', 'view',  function(Y){
+YUI({
+  modules: {
+    'dive-rdt': {
+      fullpath: './javascripts/rdt.js',
+      requires: ['array-extras']
+    }
+  }
+}).use('event-focus', 'json', 'model', 'model-list', 'view', 'dive-rdt', function(Y){
   "use strict";
   var DiveAppView, DiveView, DiveModel, DiveList;
 
@@ -30,15 +37,20 @@ YUI().use('event-focus', 'json', 'model', 'model-list', 'view',  function(Y){
     //This function will iterate on all dive and calculate residual nitrogen, and if safety step is necessary
     calculateGroups: function calculateGroups(){
       this.each(function(dive, index, diveList){
-        var group;
+        var depth = dive.get('depth'),
+        group, duration, newGroup;
+
+
         if (index === 0) {
-          group = 0;
+          group = Y.dive.FIRST_DIVE;
         } else {
           group = this.item(index - 1 ).get('newGroup');
-          group += 1;
         }
+        //TODO SIT changes the group
+        duration = Y.dive.timeToMinutes(dive.get('duration')) + Y.dive.getResidualDivingTime(group, depth );
+        newGroup = Y.dive.getEndOfDiveGroup(depth, duration);
         dive.set('group', group); 
-        dive.set('newGroup', group + 1); 
+        dive.set('newGroup', newGroup); 
         dive.save();
       }, this);
     }
@@ -336,7 +348,7 @@ YUI().use('event-focus', 'json', 'model', 'model-list', 'view',  function(Y){
     }
 
     // Sets the id attribute of the specified model (generating a new id if
-// necessary), then saves it to localStorage.
+      // necessary), then saves it to localStorage.
       function set(model) {
         var hash        = model.toJSON(),
         idAttribute = model.idAttribute;

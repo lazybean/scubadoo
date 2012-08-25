@@ -2,7 +2,7 @@
 <html>
   <head>
     <link rel="stylesheet" type="text/css" href="./stylesheets/log.css" /> 
-    <script src="http://yui.yahooapis.com/3.6.0/build/yui/yui.js" > </script>
+    <script src="./javascripts/yui/build/yui/yui.js" > </script>
   </head>
   <body>
     <div id="divelog-app" >
@@ -24,15 +24,14 @@
         <span class="dive-content" tabindex="0">Depth: {depth}</span>
         <span class="dive-content" tabindex="0">Duration: {duration}</span>
         <span class="dive-content" tabindex="0">Rest: {rest}</span>
-        <span class="dive-content" tabindex="0">Group {group}</span>
-        <span class="dive-content" tabindex="0">New Group{newGroup}</span>
+        <span class="dive-content" tabindex="0">Group: {group}</span>
+        <span class="dive-content" tabindex="0">New Group: {newGroup}</span>
       </div>
 
       <div class="dive-edit">
         <input type=number class="dive-input" tabindex="0">{depth}</input>
         <input type=time class="dive-input" tabindex="0">{duration}</input>
         <input type=time class="dive-input" tabindex="0">{rest}</input>
-        <input type=text  class="dive-input" tabindex="0">{group}</input>
       </div>
 
       <a href="#" class="dive-remove" title="Remove this dive">

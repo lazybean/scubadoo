@@ -101,8 +101,31 @@ YUI.add('dive-rdt', function(Y){
         22:{letter:'G'},
         25:{letter:'H', decompression: 5},
         40:{letter:'K', decompression: 15}
-      }
+      },
 
+      33:{ 
+        5:{letter:'C'},
+        10:{letter:'D'},
+        13:{letter:'E'},
+        15:{letter:'F'},
+        20:{letter:'G', decompression: 5},
+        30:{letter:'J', decompression: 7}
+      },
+
+      36:{ 
+        5:{letter:'C'},
+        10:{letter:'D'},
+        12:{letter:'E'},
+        15:{letter:'F', decompression: 5},
+        25:{letter:'H', decompression: 6},
+        40:{letter:'K', decompression: 14}
+      },
+      40:{ 
+        5:{letter:'C'},
+        8:{letter:'D'},
+        10:{letter:'E', decompression: 5},
+        40:{letter:'J', decompression: 10}
+      }
     },
     "sit":{
       A: {

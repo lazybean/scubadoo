@@ -19,10 +19,10 @@ YUI({
       depth: {value: 0},
       duration: {value: 0},
       rest: {value: 0},
-      //Residual Nitrogen group 0=== "no nitrogen", 1==='A', 2==='B', ..., 12==='L'
-      previousGroup: {value: 0 }, 
+      previousGroup: {value: Y.dive.FIRST_DIVE }, 
       group: {value: 0 }, 
-      newGroup: {value: 0 },
+      tempGroup: {value: Y.dive.FIRST_DIVE}, //group after dive, before SIT
+      newGroup: {value: Y.dive.FIRST_DIVE }, //group after dive and SIT
       safetyStop: {value: false}
     }
   }
@@ -38,18 +38,20 @@ YUI({
     calculateGroups: function calculateGroups(){
       this.each(function(dive, index, diveList){
         var depth = dive.get('depth'),
-        group, duration, newGroup;
-
+        restTime = Y.dive.timeToMinutes(dive.get('rest')),
+        group, duration, tempGroup, newGroup;
 
         if (index === 0) {
           group = Y.dive.FIRST_DIVE;
         } else {
           group = this.item(index - 1 ).get('newGroup');
         }
-        //TODO SIT changes the group
+
         duration = Y.dive.timeToMinutes(dive.get('duration')) + Y.dive.getResidualDivingTime(group, depth );
-        newGroup = Y.dive.getEndOfDiveGroup(depth, duration);
+        tempGroup = Y.dive.getEndOfDiveGroup(depth, duration);
+        newGroup = Y.dive.getAfterSITGroup(tempGroup, restTime);
         dive.set('group', group); 
+        dive.set('tempGroup', tempGroup); 
         dive.set('newGroup', newGroup); 
         dive.save();
       }, this);
@@ -82,7 +84,7 @@ YUI({
       // Update the display when a new item is added to the list, or when the
       // entire list is reset.
       list.after('add', this.add, this);
-      //list.after('remove', this.remove, this);
+      list.after('remove', this.removeDive, this);
       list.after('reset', this.reset, this);
 
       // Re-render the stats in the footer whenever an item is added, removed
@@ -132,6 +134,11 @@ YUI({
       );
     },
 
+//remove the dive caclculte groups
+    removeDive: function(e) {
+      this.diveList.calculateGroups();
+    },
+
 
     // Creates a new Dive item when the new dive button is clicked in the new dive
     // input field.
@@ -166,6 +173,8 @@ YUI({
     // list is reset.
     reset: function (e) {
       var fragment = Y.one(Y.config.doc.createDocumentFragment());
+
+      this.diveList.calculateGroups();
 
       Y.Array.each(e.models, function (model) {
         var view = new DiveView({model: model});
@@ -250,6 +259,7 @@ YUI({
         duration   : model.getAsHTML('duration'),
         rest   : model.getAsHTML('rest'),
         group   : model.getAsHTML('group'),
+        tempGroup   : model.getAsHTML('tempGroup'),
         newGroup   : model.getAsHTML('newGroup')
       }));
 

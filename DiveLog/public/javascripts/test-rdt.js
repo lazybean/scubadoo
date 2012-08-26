@@ -85,6 +85,17 @@ YUI({
       result = Y.dive.getResidualDivingTime(group, depth);
       Y.Assert.areEqual(expectedRDT, result);
     }, 
+
+    'Diving not allowedJ at 33m gives too much': function () {
+
+      var group = Y.dive.DIVE_NOT_RECOMMANDED,
+      depth = 33,
+      expectedRDT = Y.dive.RDT_TOO_MUCH,
+      result;
+
+      result = Y.dive.getResidualDivingTime(group, depth);
+      Y.Assert.areEqual(expectedRDT, result);
+    }, 
     'If there was no dive, rdt should be 0': function () {
       var group = Y.dive.FIRST_DIVE,
       depth = 15, //any depth
@@ -96,11 +107,44 @@ YUI({
 
     }
   }),
+  getAfterSITGroup = new Y.Test.Case({
+    name: 'getAfterSITGroup',
+    'rest 1:35 in F should get D': function () {
+      var group = 'F',
+      duration = Y.dive.timeToMinutes('1:35'),
+      expectedGroup = 'D',
+      result;
+
+      result = Y.dive.getAfterSITGroup(group, duration);
+      Y.Assert.areEqual(expectedGroup, result);
+    },
+    'resting more than one day should reset Group': function () {
+      var group = 'F',
+      duration = Y.dive.ONE_DAY + 1,
+      expectedGroup = Y.dive.FIRST_DIVE,
+      result;
+
+      result = Y.dive.getAfterSITGroup(group, duration);
+      Y.Assert.areEqual(expectedGroup, result);
+    },
+
+    'resting less than 10minutes  should recommand NOT diving': function () {
+      var group = 'A',
+      duration = 1,
+      expectedGroup = Y.dive.DIVE_NOT_RECOMMANDED,
+      result;
+
+      result = Y.dive.getAfterSITGroup(group, duration);
+      Y.Assert.areEqual(expectedGroup, result);
+    }
+
+  }),
   rntTestSuite = new Y.Test.Suite('Y.dive Test');
 
   rntTestSuite.add(timeConversionTest);
   rntTestSuite.add(getEndOfDiveGroup);
   rntTestSuite.add(getResidualDivingTime);
+  rntTestSuite.add(getAfterSITGroup);
 
   new Y.Test.Console().render();
   Y.Test.Runner.add(rntTestSuite);

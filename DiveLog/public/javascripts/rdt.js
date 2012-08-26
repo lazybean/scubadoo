@@ -7,6 +7,7 @@ YUI.add('dive-rdt', function(Y){
   dive.FIRST_DIVE = 'First dive';  
   dive.TOO_MUCH_RDT = 1440;  
   dive.RDT_FIRST_DIVE = 0; 
+  dive.ONE_DAY = 1440; 
 
   /**
   * NAUI dive table. 
@@ -103,7 +104,142 @@ YUI.add('dive-rdt', function(Y){
       }
 
     },
-    "sit":{},
+    "sit":{
+      A: {
+        '1441': Y.dive.FIRST_DIVE,
+        '10': 'A',
+        '00': Y.dive.DIVE_NOT_RECOMMANDED
+      },
+
+      B: {
+        '1441': Y.dive.FIRST_DIVE,
+        '201': 'A',
+        '10': 'B',
+        '00': Y.dive.DIVE_NOT_RECOMMANDED
+      },
+
+      C: {
+        '1441': Y.dive.FIRST_DIVE,
+        '290': 'A',
+        '100': 'B',
+        '10': 'C',
+        '00': Y.dive.DIVE_NOT_RECOMMANDED
+      },
+      D: {
+        '1441': Y.dive.FIRST_DIVE,
+        '349': 'A',
+        '159': 'B',
+        '70': 'C',
+        '10': 'D',
+        '00': Y.dive.DIVE_NOT_RECOMMANDED
+      },
+      E: {
+        '1441': Y.dive.FIRST_DIVE,
+        '395': 'A',
+        '205': 'B',
+        '118': 'C',
+        '55': 'D',
+        '10': 'E',
+        '00': Y.dive.DIVE_NOT_RECOMMANDED
+      },
+      F: {
+        '1441': Y.dive.FIRST_DIVE,
+        '426': 'A',
+        '138': 'B',
+        '149': 'C',
+        '90': 'D',
+        '46': 'E',
+        '10': 'F',
+        '00': Y.dive.DIVE_NOT_RECOMMANDED
+      },
+      G: {
+        '1441': Y.dive.FIRST_DIVE,
+        '456': 'A',
+        '256': 'B',
+        '179': 'C',
+        '120': 'D',
+        '76': 'E',
+        '41': 'F',
+        '10': 'G',
+        '00': Y.dive.DIVE_NOT_RECOMMANDED
+      },
+
+      H:{
+        '1441': Y.dive.FIRST_DIVE,
+        '560': 'A',
+        '290': 'B',
+        '201': 'C',
+        '144': 'D',
+        '102': 'E',
+        '67': 'F',
+        '37': 'G',
+        '10': 'H',
+        '00': Y.dive.DIVE_NOT_RECOMMANDED
+      },
+
+      I:{
+        '1441': Y.dive.FIRST_DIVE,
+        '582': 'A',
+        '313': 'B',
+        '224': 'C',
+        '165': 'D',
+        '123': 'E',
+        '90': 'F',
+        '60': 'G',
+        '34': 'H',
+        '10': 'I',
+        '00': Y.dive.DIVE_NOT_RECOMMANDED
+      },
+
+      J:{
+        '1441': Y.dive.FIRST_DIVE,
+        '531': 'A',
+        '341': 'B',
+        '243': 'C',
+        '185': 'D',
+        '141': 'E',
+        '108': 'F',
+        '80': 'G',
+        '55': 'H',
+        '32': 'I',
+        '10': 'J',
+        '00': Y.dive.DIVE_NOT_RECOMMANDED
+      },
+
+      K:{
+        '1441': Y.dive.FIRST_DIVE,
+        '539': 'A',
+        '349': 'B',
+        '260': 'C',
+        '202': 'D',
+        '159': 'E',
+        '124': 'F',
+        '96': 'G',
+        '72': 'H',
+        '50': 'I',
+        '29': 'J',
+        '10': 'K',
+        '00': Y.dive.DIVE_NOT_RECOMMANDED
+      },
+
+      L:{
+        '1441': Y.dive.FIRST_DIVE,
+        '553': 'A',
+        '363': 'B',
+        '276': 'C',
+        '217': 'D',
+        '294': 'E',
+        '240': 'F',
+        '140': 'G',
+        '86': 'H',
+        '65': 'I',
+        '46': 'J',
+        '27': 'K',
+        '10': 'L',
+        '00': Y.dive.DIVE_NOT_RECOMMANDED
+      }
+
+    },
     "rdt":{
       A:{
         "12": 7,
@@ -306,11 +442,11 @@ YUI.add('dive-rdt', function(Y){
     var table = dive.table.nauiTable.eod,
     depthKey, durationKey, newGroup;
     //get depth data
-    depthKey = dive.getClosestKey(depth, table);
+    depthKey = dive.getClosestLesserKey(depth, table);
     if (Y.Lang.isNull(depthKey)){
       newGroup = Y.dive.DIVE_NOT_RECOMMANDED;
     } else { 
-      durationKey = dive.getClosestKey(duration, table[depthKey]);
+      durationKey = dive.getClosestLesserKey(duration, table[depthKey]);
       if (Y.Lang.isNull(durationKey)){
         newGroup = Y.dive.DIVE_NOT_RECOMMANDED;
       } else {
@@ -320,25 +456,56 @@ YUI.add('dive-rdt', function(Y){
     return newGroup;
   };
 
+
+
   /**
-   * Return the residual diving time according to the current Group and expected depth
-   *
-   * @method getResidualDivingTime
-   * @param {String} group
-   * @param {number} depth
-   * @return {number} rdt the residual diving time, to add to the next dive duration
-   */
+  * Return the new Group after a rest at surface SIT.
+  *
+  * @method getAfterSITGroup
+  * @param {String} group after the dive
+  * @param {number} the duration of the rest in  minutes 
+  */
+  dive.getAfterSITGroup = function (group, duration) {
+    var table = dive.table.nauiTable.sit,
+    durationKey, newGroup;
+    //get depth data
+    if (group === Y.dive.FIRST_DIVE) {
+      newGroup = Y.dive.FIRST_DIVE;
+    } else if (group === Y.dive.DIVE_NOT_RECOMMANDED){
+      newGroup = Y.dive.DIVE_NOT_RECOMMANDED;
+      if( duration > Y.dive.ONE_DAY) {
+      newGroup = Y.dive.FIRST_DIVE;
+      }  
+    } else {
+        durationKey = dive.getClosestGreaterKey(duration, table[group]);
+        if (Y.Lang.isNull(durationKey)){
+          newGroup = Y.dive.DIVE_NOT_RECOMMANDED;
+        } else {
+          newGroup = table[group][durationKey];
+        }
+    }
+    return newGroup;
+  };
+
+  /**
+  * Return the residual diving time according to the current Group and expected depth
+  *
+  * @method getResidualDivingTime
+  * @param {String} group
+  * @param {number} depth
+  * @return {number} rdt the residual diving time, to add to the next dive duration
+  */
   dive.getResidualDivingTime = function (group, depth) {
-  
+
     var table = dive.table.nauiTable.rdt,
     depthKey,  rdt;
     //get depth data
     if (group === Y.dive.DIVE_NOT_RECOMMANDED){
       rdt = Y.dive.RDT_TOO_MUCH;
-    } if (group === Y.dive.FIRST_DIVE) {
+    } else  if (group === Y.dive.FIRST_DIVE) {
       rdt = Y.dive.RDT_FIRST_DIVE;
     } else { 
-      depthKey = dive.getClosestKey(depth, table[group]);
+      depthKey = dive.getClosestLesserKey(depth, table[group]);
       if (Y.Lang.isNull(depthKey)){
         rdt = Y.dive.RDT_TOO_MUCH;
       } else {
@@ -350,15 +517,37 @@ YUI.add('dive-rdt', function(Y){
 
   /**
   * Return the corresponding key 
-  * The corresponding key is the key with the value that is less than but the closest
+  * The corresponding key is the key with the value that is greaterthan but the closest
   * 
-  * @method getClosestKey
+  * @method getClosestGreaterKey
   * @param {String} searchedkey
   * @param {Object} the object in wich we are looking for the key
   * @return {String} the closest existing key
   *
   */
-  dive.getClosestKey = function (searchedKey, obj) {
+  dive.getClosestGreaterKey = function (searchedKey, obj) {
+    //we may want to avoid sorting and even finding every time
+    var keys = Y.Object.keys(obj).sort(Y.Array.numericSort).reverse();
+    return Y.Array.find(keys, function (k, i, keys) {
+      var result = false;
+      if (searchedKey >= parseInt(k, 10)) {
+        result = true;
+      } 
+      return result;
+    });
+  };
+
+  /**
+  * Return the corresponding key 
+  * The corresponding key is the key with the value that is less than but the closest
+  * 
+  * @method getClosestLesserKey
+  * @param {String} searchedkey
+  * @param {Object} the object in wich we are looking for the key
+  * @return {String} the closest existing key
+  *
+  */
+  dive.getClosestLesserKey = function (searchedKey, obj) {
     //we may want to avoid sorting and even finding every time
     var keys = Y.Object.keys(obj).sort(Y.Array.numericSort);
     return Y.Array.find(keys, function (k, i, keys) {

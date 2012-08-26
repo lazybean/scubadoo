@@ -134,7 +134,7 @@ YUI({
       );
     },
 
-//remove the dive caclculte groups
+    //remove the dive caclculte groups
     removeDive: function(e) {
       this.diveList.calculateGroups();
     },
@@ -252,6 +252,9 @@ YUI({
     render: function () {
       var container = this.get('container'),
       model     = this.get('model'),
+      group     = model.get('group'),
+      tempGroup  = model.get('tempGroup'),
+      newGroup  = model.get('newGroup'),
       done      = model.get('done');
 
       container.setContent(Y.Lang.sub(this.template, {
@@ -262,6 +265,14 @@ YUI({
         tempGroup   : model.getAsHTML('tempGroup'),
         newGroup   : model.getAsHTML('newGroup')
       }));
+
+      if (group === Y.dive.DIVE_NOT_RECOMMANDED || 
+        tempGroup === Y.dive.DIVE_NOT_RECOMMANDED ||
+      newGroup === Y.dive.DIVE_NOT_RECOMMANDED) {
+        container.addClass('danger');
+      } else {
+        container.removeClass('danger');
+      }
 
       this.set('inputNode', container.one('.dive-input'));
 
@@ -358,7 +369,7 @@ YUI({
     }
 
     // Sets the id attribute of the specified model (generating a new id if
-      // necessary), then saves it to localStorage.
+// necessary), then saves it to localStorage.
       function set(model) {
         var hash        = model.toJSON(),
         idAttribute = model.idAttribute;

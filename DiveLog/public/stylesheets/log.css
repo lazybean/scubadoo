@@ -11,14 +11,18 @@
 }
 
 .dive-edit {
-display: none;
+  display: none;
 }
 
 .dive-remove {
-background: red;
+  background: red;
 }
 
 #divelog-app li {
-list-style-type: none;
+  list-style-type: none;
 
+}
+
+.danger {
+  background: red;
 }

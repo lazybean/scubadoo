@@ -20,6 +20,16 @@ YUI({
 
     },
 
+    'an hh:mm:ss should become mm rounded to upper minute (1:12:12 -> 73)': function(){
+      var inputTime = '1:12:12',
+      expectedResult = 73,
+      result = Y.dive.timeToMinutes(inputTime);
+
+      Y.Assert.areEqual(expectedResult, result);
+
+    },
+
+
     'an mm should stay mm (122 -> 122': function(){
       var inputTime = '122',
       result = Y.dive.timeToMinutes(inputTime);
@@ -27,12 +37,12 @@ YUI({
       Y.Assert.areEqual(inputTime, result);
     },
 
-    'an incorrect time hh:mm:ss should fail': function() {
+    'an incorrect time d:hh:mm:ss should fail': function() {
 
-      var inputTime = '12:22:22';
+      var inputTime = '1:12:22:22';
       //result = Y.dive.timeToMinutes(inputTime);
 
-      Y.Assert.throwsError( 'dive.timeToMinutes accepts only hh:mm or mm time',  
+      Y.Assert.throwsError( 'dive.timeToMinutes accepts only hh:mm:ss, hh:mm or mm time',  
         function() {
           Y.dive.timeToMinutes(inputTime);
         }

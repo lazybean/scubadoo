@@ -1,4 +1,13 @@
 YUI.add('dive-rdt', function(Y){
+  /**
+  * Module containing funtion to calculate residual nitrogen
+  *
+  * @module dive-rdt
+  * @namespace dive
+  *
+  *
+  */
+
   "use strict";
   var dive = Y.namespace('dive');
   Y.namespace('dive.table');
@@ -14,6 +23,8 @@ YUI.add('dive-rdt', function(Y){
   * eod stands for End of Dive  Letter group: it gives you the residual nitrogen letter group after a dive
   * sit stands for Surface Interval Time: it gives you your new residual nigrogen letter group after resting on the surface
   * rdt stands for Repetitive Dive Timetable: it translate your residual nitrogen in dive time you will add to dive duration of your next dive.
+  * @public
+  * @property nauiTable
   *
   */
   dive.table.nauiTable = {
@@ -435,7 +446,7 @@ YUI.add('dive-rdt', function(Y){
   * @return {number} number of minutes
   */
   dive.timeToMinutes = function(timeString) {
-    var timeRe =  /^\d+(:\d+)?$/,
+    var timeRe =  /^\d+(:\d+){0,2}?$/,
     minutes, hourAndMinutes;
     if ( timeRe.test(timeString) ) {
       hourAndMinutes = timeString.split(':');
@@ -446,10 +457,15 @@ YUI.add('dive-rdt', function(Y){
       } else {
         //hour and minutes
         minutes = parseInt(hourAndMinutes[1], 10) + 60 * parseInt(hourAndMinutes[0], 10);
+
+        //if we have secondes, we rounded it to one more minute (safety)
+        if (hourAndMinutes.length === 3) {
+          minutes += 1 ;
+        }
       }
     } else {
       minutes = null;
-      Y.error('dive.timeToMinutes accepts only hh:mm or mm time');
+      Y.error('dive.timeToMinutes accepts only hh:mm:ss, hh:mm or mm time');
     }
     return minutes;
   };
@@ -497,15 +513,15 @@ YUI.add('dive-rdt', function(Y){
     } else if (group === Y.dive.DIVE_NOT_RECOMMANDED){
       newGroup = Y.dive.DIVE_NOT_RECOMMANDED;
       if( duration > Y.dive.ONE_DAY) {
-      newGroup = Y.dive.FIRST_DIVE;
+        newGroup = Y.dive.FIRST_DIVE;
       }  
     } else {
-        durationKey = dive.getClosestGreaterKey(duration, table[group]);
-        if (Y.Lang.isNull(durationKey)){
-          newGroup = Y.dive.DIVE_NOT_RECOMMANDED;
-        } else {
-          newGroup = table[group][durationKey];
-        }
+      durationKey = dive.getClosestGreaterKey(duration, table[group]);
+      if (Y.Lang.isNull(durationKey)){
+        newGroup = Y.dive.DIVE_NOT_RECOMMANDED;
+      } else {
+        newGroup = table[group][durationKey];
+      }
     }
     return newGroup;
   };

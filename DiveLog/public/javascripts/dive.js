@@ -1,63 +1,23 @@
 YUI({
+  filter: 'raw',
   modules: {
     'dive-rdt': {
       fullpath: './javascripts/rdt.js',
       requires: ['array-extras']
+    },
+    'dive-model': {
+      fullpath: './javascripts/diveModel.js',
+      requires: ['dive-utils', 'model']
+    },
+    'dive-utils': {
+      fullpath: './javascripts/dive-utils.js'
     }
   }
-}).use('event-focus', 'json', 'model', 'model-list', 'view', 'dive-rdt', function(Y){
+}).use('event-focus', 'json', 'dive-model', 'model-list', 'view', 'dive-rdt', function(Y){
   "use strict";
-  var DiveAppView, DiveView, DiveModel, DiveList;
+  var DiveAppView, DiveView;
 
 
-  DiveModel = Y.DiveModel = Y.Base.create('diveModel' , Y.Model, [], {
-    //This tell the Model to use a localeStorage sync provider to save and load information about a dive
-    sync: localStorageSync('dive')
-  },
-  {
-    ATTRS: {
-      depth: {value: 0},
-      duration: {value: 0},
-      rest: {value: 0},
-      previousGroup: {value: Y.dive.FIRST_DIVE }, 
-      group: {value: 0 }, 
-      tempGroup: {value: Y.dive.FIRST_DIVE}, //group after dive, before SIT
-      newGroup: {value: Y.dive.FIRST_DIVE }, //group after dive and SIT
-      safetyStop: {value: false}
-    }
-  }
-  );
-
-  DiveList = Y.DiveList = Y.Base.create('diveList', Y.ModelList, [], {
-    model: DiveModel,
-
-    //This tell the Model to use a localeStorage sync provider to save and load information about a dive
-    sync: localStorageSync('dive'),
-
-    //This function will iterate on all dive and calculate residual nitrogen, and if safety step is necessary
-    calculateGroups: function calculateGroups(){
-      this.each(function(dive, index, diveList){
-        var depth = dive.get('depth'),
-        restTime = Y.dive.timeToMinutes(dive.get('rest')),
-        group, duration, tempGroup, newGroup;
-
-        if (index === 0) {
-          group = Y.dive.FIRST_DIVE;
-        } else {
-          group = this.item(index - 1 ).get('newGroup');
-        }
-
-        duration = Y.dive.timeToMinutes(dive.get('duration')) + Y.dive.getResidualDivingTime(group, depth );
-        tempGroup = Y.dive.getEndOfDiveGroup(depth, duration);
-        newGroup = Y.dive.getAfterSITGroup(tempGroup, restTime);
-        dive.set('group', group); 
-        dive.set('tempGroup', tempGroup); 
-        dive.set('newGroup', newGroup); 
-        dive.save();
-      }, this);
-    }
-
-  });
 
   DiveAppView = Y.DiveAppView = Y.Base.create('diveAppView', Y.View, [], {
 
@@ -66,8 +26,11 @@ YUI({
     // to the node(s) matching each selector.
     events: {
       // Handle click on the new dive button.
-      '#add-dive': {click: 'createDive'}
+      '#add-dive': {click: 'createDive'},
+      '#divelog-app>input': {enter: 'createDive'}
     },
+
+    lastGroupClass: Y.dive.FIRST_DIVE,
 
     // The `template` property is a convenience property for holding a
     // template for this view. In this case, we'll use it to store the
@@ -79,7 +42,7 @@ YUI({
     // us an opportunity to set up the view.
     initializer: function () {
       // Create a new TodoList instance to hold the Dive items.
-      var list = this.diveList = new DiveList();
+      var list = this.diveList = new Y.dive.DiveList();
 
       // Update the display when a new item is added to the list, or when the
       // entire list is reset.
@@ -102,7 +65,20 @@ YUI({
     render: function () {
       var diveList = this.diveList,
       numDives = 0,
-      stats    = this.get('container').one('#dive-stats');
+      stats    = this.get('container').one('#dive-stats'),
+      body = Y.one('body'),
+      lastGroup;
+      if (diveList.size() > 0 ) {
+        lastGroup = diveList.item(diveList.size() - 1).get('newGroup');
+      } else {
+        lastGroup = Y.dive.FIRST_DIVE;  
+      }
+      Y.log('new lastGroup is ' + lastGroup);
+
+      body.removeClass(this.lastGroupClass);
+      this.lastGroupClass = 'group_' + lastGroup;
+      body.addClass(this.lastGroupClass);
+
 
       // If there are no todo items, then clear the stats.
       if (diveList.isEmpty()) {
@@ -369,7 +345,7 @@ YUI({
     }
 
     // Sets the id attribute of the specified model (generating a new id if
-// necessary), then saves it to localStorage.
+      // necessary), then saves it to localStorage.
       function set(model) {
         var hash        = model.toJSON(),
         idAttribute = model.idAttribute;

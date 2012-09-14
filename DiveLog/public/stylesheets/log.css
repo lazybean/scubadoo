@@ -1,11 +1,61 @@
+/*HTML Elements*/
+body {
+  background: #02141e url('/images/bg_ocean_deep_b.jpg') no-repeat right top;
+}
+
 #divelog-app {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   margin: auto;
   width: 80%;
+  max-width: 800px;
   text-align: center;
   background: #8888FF;
   border: 1px solid;
   border-radius: 5px;
+  margin-top: 2em;
+}
+
+#dive-inputs {
+  position: relative;
+  height: 330px;
+  padding-top: 5em;
+  background: url('/images/ocean_drawing3.jpg');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+#add-dive {
+  position: absolute;
+  top: 180px;
+  left: 400px;
+}
+
+#new-depth {
+  position: absolute;
+  top: 330px;
+  left: 50px;
+}
+
+#new-duration {
+  position: absolute;
+  top: 360px;
+  left: 180px;
+}
+
+#new-rest {
+  position: absolute;
+  top: 205px;
+  left: 320px;
+}
+
+#poster {
+  box-shadow: 1px 2px 5px darkgrey;
+  background-image: url('/images/grid_white_o.png');
+  width: 300px;
+  height: 300px;
+  position: absolute;
+  top: 50px;
+  left: 450px;
 }
 
 .dive-label {
@@ -16,13 +66,14 @@
   display: none;
 }
 
-.dive-remove {
-  background: red;
+.dive-remove:hover {
+  color: red;
 }
 
 #dive-list {
   list-style-type: none;
   margin: auto;
+  background-image: url('/images/grid_white_o.png');
 }
 
 #dive-list li {
@@ -35,6 +86,19 @@
 
 
 
-.danger {
-  background: red;
+ #divelog-app.danger, #divelog-app.group_Avoiddiving{
+border: solid red 2px;
 }
+
+   #divelog-app.group_A, #divelog-app.group_B, #divelog-app.group_C, #divelog-app.group_D, #divelog-app.group_E {
+  border: solid  #AAAAFF;
+}
+
+  #divelog-app.group_F, #divelog-app.group_G, #divelog-app.group_H, #divelog-app.group_I {
+  border: solid #CCAAFF;
+}
+
+  #divelog-app.group_J, #divelog-app.group_K, #divelog-app.group_L {
+  border: solid  #FFAAFF;
+} 
+

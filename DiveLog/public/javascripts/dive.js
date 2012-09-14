@@ -67,6 +67,7 @@ YUI({
       numDives = 0,
       stats    = this.get('container').one('#dive-stats'),
       body = Y.one('body'),
+      container = this.get('container'),
       lastGroup;
       if (diveList.size() > 0 ) {
         lastGroup = diveList.item(diveList.size() - 1).get('newGroup');
@@ -75,9 +76,9 @@ YUI({
       }
       Y.log('new lastGroup is ' + lastGroup);
 
-      body.removeClass(this.lastGroupClass);
-      this.lastGroupClass = 'group_' + lastGroup;
-      body.addClass(this.lastGroupClass);
+      container.removeClass(this.lastGroupClass);
+      this.lastGroupClass = 'group_' + lastGroup.replace(/ /g, "");
+      container.addClass(this.lastGroupClass);
 
 
       // If there are no todo items, then clear the stats.

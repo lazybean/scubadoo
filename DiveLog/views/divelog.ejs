@@ -1,52 +1,50 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <link rel="stylesheet" type="text/css" href="./stylesheets/log.css" /> 
-    <script src="./javascripts/yui/build/yui/yui.js" > </script>
-  </head>
-  <body>
-    <div id="divelog-app" >
-
-      <label class="dive-label" for="new-depth"> What is the maximum depth you reach this dive? </label>
-      <input id="new-depth" type=number class="dive-input" tabindex="0"></input>
-      <label class="dive-label" for="new-duration"> How long was this dive? </label>
-      <input id="new-duration" type=time class="dive-input" tabindex="0"></input>
-      <label class="dive-label" for="new-rest"> How long did you rest after that dive? </label>
-      <input id="new-rest" type=time class="dive-input" tabindex="0"></input>
-<button id="add-dive" class="yui3-button">Add dive</button> 
-      <ul id="dive-list"> </ul>
-      <div id="dive-stats"></div>
-    </div>
-
-    <!-- This template HTML will be used to render each todo item. -->
-    <script type="text/x-template" id="dive-item-template">
-      <div class="dive-view">
-        <span class="dive-content" tabindex="0">Group: {group}</span>
-        <span class="dive-content" tabindex="0">Depth: {depth}</span>
-        <span class="dive-content" tabindex="0">Duration: {duration}</span>
-        <span class="dive-content" tabindex="0">Temp. Group: {tempGroup}</span>
-        <span class="dive-content" tabindex="0">Rest: {rest}</span>
-        <span class="dive-content" tabindex="0">New Group: {newGroup}</span>
-      </div>
-
-      <div class="dive-edit">
-        <input type=number class="dive-input" tabindex="0">{depth}</input>
-        <input type=time class="dive-input" tabindex="0">{duration}</input>
-        <input type=time class="dive-input" tabindex="0">{rest}</input>
-      </div>
-
-      <a href="#" class="dive-remove" title="Remove this dive">
-        <span class="dive-remove-icon">Remove</span>
-      </a>
-    </script>
-
-    <!-- This template HTML will be used to render the statistics at the bottom
-    of the todo list. -->
-    <script type="text/x-template" id="dive-stats-template">
-        <span class="dive-count">{numDives} dive(s)</span>
-    </script>
+<link rel="stylesheet" type="text/css" href="./stylesheets/log.css" /> 
+<script src="./javascripts/yui/build/yui/yui.js" > </script>
 
 
-    <script src="./javascripts/dive.js"></script> 
-  </body>
-</html>
+<div id="divelog-app" >
+
+  <div id="dive-inputs">
+    <!--label class="dive-label" for="new-depth"> What is the maximum depth you reach this dive? </label-->
+    <input id="new-depth" placeholder="Max Dive (m)" type=number class="dive-input" tabindex="0"></input>
+    <!--label class="dive-label" for="new-duration"> How long was this dive? </label-->
+    <input id="new-duration" placeholder="duration (h:m)" type=time class="dive-input" tabindex="0"></input>
+    <!--label class="dive-label" for="new-rest"> How long did you rest after that dive? </label-->
+    <input id="new-rest" placeholder="rest (h:m)" type=time class="dive-input" t§abindex="0"></input>
+    <button id="add-dive" class="yui3-button">Add dive</button> 
+  </div>
+  <ul id="dive-list"> </ul>
+  <div id="dive-stats"></div>
+</div>
+
+<!-- This template HTML will be used to render each todo item. -->
+<script type="text/x-template" id="dive-item-template">
+  <div class="dive-view">
+    <span class="dive-content" tabindex="0">Group: {group}</span>
+    <span class="dive-content" tabindex="0">Depth: {depth}</span>
+    <span class="dive-content" tabindex="0">Duration: {duration}</span>
+    <span class="dive-content" tabindex="0">Temp. Group: {tempGroup}</span>
+    <span class="dive-content" tabindex="0">Rest: {rest}</span>
+    <span class="dive-content" tabindex="0">New Group: {newGroup}</span>
+  </div>
+
+  <div class="dive-edit">
+    <input type=number class="dive-input" tabindex="0">{depth}</input>
+    <input type=time class="dive-input" tabindex="0">{duration}</input>
+    <input type=time class="dive-input" tabindex="0">{rest}</input>
+  </div>
+
+  <a href="#" class="dive-remove" title="Remove this dive">
+    <span class="dive-remove-icon">Remove</span>
+  </a>
+</script>
+
+<!-- This template HTML will be used to render the statistics at the bottom
+of the todo list. -->
+<script type="text/x-template" id="dive-stats-template">
+  <span class="dive-count">{numDives} dive(s)</span>
+</script>
+
+
+<script src="./javascripts/dive.js"></script> 

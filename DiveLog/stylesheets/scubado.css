@@ -1,0 +1,58 @@
+/*HTML Elements*/
+body {
+	background: #02141e url('public/images/bg_ocean_deep_b.jpg') no-repeat right top;
+}
+div input{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+/*Page Elemets*/
+#bg {
+	width: 800px;
+	height: 400px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+#poster {
+	box-shadow: 1px 2px 5px darkgrey;
+	background-image: url('public/images/grid_white_o.png');
+	width: 300px;
+	height: 300px;
+	position: absolute;
+	top: 50px;
+	left: 450px;
+}
+#new-duration {
+	top: 205px;
+	left: 50px;
+}
+#end {
+	top: 205px;
+	left: 220px;
+}
+#new-rest {	
+	top: 205px;
+	left: 320px;
+}
+#new-depth {	
+	top: 330px;
+	left: 50px;
+}
+#stop {	
+	top: 265px;
+	left: 280px;
+}
+
+/*Other classes*/
+#divelog-app {
+	box-shadow: 0 8px 6px -6px black;
+	width: 800px;
+	height: 400px;
+	display: block;
+	margin: 100px auto 0px auto;
+	position: relative;
+}
+

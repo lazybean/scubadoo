@@ -1,6 +1,6 @@
 /*HTML Elements*/
 body {
-  background: #02141e url('./images/bg_ocean_deep_b.jpg') no-repeat right top;
+  background: #02141e url('../images/bg_ocean_deep_b.jpg') no-repeat right top;
 }
 
 #divelog-app {
@@ -19,7 +19,7 @@ body {
   position: relative;
   height: 330px;
   padding-top: 5em;
-  background: url('./images/ocean_drawing3.jpg');
+  background: url('../images/ocean_drawing3.jpg');
   background-size: contain;
   background-repeat: no-repeat;
 }
@@ -50,7 +50,7 @@ body {
 
 #poster {
   box-shadow: 1px 2px 5px darkgrey;
-  background-image: url('./images/grid_white_o.png');
+  background-image: url('../images/grid_white_o.png');
   width: 300px;
   height: 300px;
   position: absolute;
@@ -73,7 +73,7 @@ body {
 #dive-list {
   list-style-type: none;
   margin: auto;
-  background-image: url('./images/grid_white_o.png');
+  background-image: url('../images/grid_white_o.png');
 }
 
 #dive-list li {
